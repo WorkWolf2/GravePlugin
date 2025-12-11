@@ -25,25 +25,33 @@
 package dev.pluginz.graveplugin.command;
 
 import dev.pluginz.graveplugin.GravePlugin;
+import dev.pluginz.graveplugin.manager.GraveInventoryManager;
 import dev.pluginz.graveplugin.manager.GraveManager;
+import dev.pluginz.graveplugin.util.Grave;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 public class GraveCommand implements CommandExecutor {
     private final GravePlugin plugin;
     private final GraveManager graveManager;
+    private final GraveInventoryManager graveInventoryManager;
     private final String prefix;
 
     public GraveCommand(GravePlugin plugin) {
         this.plugin = plugin;
         this.graveManager = plugin.getGraveManager();
+        this.graveInventoryManager = plugin.getGraveInventoryManager();
         this.prefix = plugin.getPluginPrefix();
     }
 
@@ -62,6 +70,8 @@ public class GraveCommand implements CommandExecutor {
                 return handleReload(sender);
             case "open":
                 return handleOpen(sender, args);
+            case "collect":
+                return this.handleCollect(sender);
             default:
                 sendHelp(sender);
                 return true;
@@ -126,6 +136,66 @@ public class GraveCommand implements CommandExecutor {
         plugin.getGraveInventoryManager().openGrave(player, UUID.fromString(graveId));
 
         return true;
+    }
+
+    private boolean handleCollect(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.only-player"))); // solo i giocatori possono usare
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        if (!player.hasPermission("btgraves.collect")) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.no-permission")));
+            return true;
+        }
+
+        Grave nearestGrave = this.findNearestPlayerGrave(player);
+
+        if (nearestGrave == null) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.no-graves-near")));
+            return true;
+        }
+
+        double distance = player.getLocation().distance(nearestGrave.getLocation());
+        this.graveInventoryManager.openGrave(player, nearestGrave.getGraveId());
+
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.click")));
+        return true;
+    }
+
+    private Grave findNearestPlayerGrave(Player player) {
+        Grave nearestGrave = null;
+        double nearestDistance = 10.0D;
+        double MAX_DISTANCE = 10.0D;
+
+        for (Grave grave : this.graveManager.getGraves().values()) {
+            if (grave.getPlayerName().equals(player.getName()) && !grave.isExpired() && grave.getLocation().getWorld().equals(player.getWorld())) {
+                double distance = player.getLocation().distance(grave.getLocation());
+
+                if (distance < MAX_DISTANCE && distance < nearestDistance) {
+                    nearestDistance = distance;
+                    nearestGrave = grave;
+                }
+            }
+        }
+
+        return nearestGrave;
+    }
+
+    private boolean addItemToInventoryOrDrop(Player player, ItemStack item) {
+        HashMap<Integer, ItemStack> leftOver = player.getInventory().addItem(new ItemStack[]{item});
+        if (leftOver.isEmpty()) {
+            return true;
+        } else {
+
+            for (ItemStack leftOverItem : leftOver.values()) {
+                player.getWorld().dropItemNaturally(player.getLocation(), leftOverItem);
+            }
+
+            return false;
+        }
     }
 
     private void sendHelp(CommandSender sender) {

@@ -23,6 +23,7 @@ public class GraveTabCompleter implements TabCompleter {
                 commands.add("reload");
             }
             commands.add("info");
+            commands.add("collect");
             StringUtil.copyPartialMatches(args[0], commands, completions);
         }
 

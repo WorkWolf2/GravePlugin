@@ -24,3 +24,10 @@ smallArmorStand: true
 # 0 - 100
 # default: 100
 expPercentage: 100 # %
+
+# by wolfino
+messages:
+  only-player: "&cSolo i player possono usare questo comando!"
+  no-permission: "&cNon hai il permesso di usare questo comando!"
+  no-graves-near: "&cNon ci sono graves vicinoa te"
+  click: "&aClicca il bottone per ricevere gli item"
