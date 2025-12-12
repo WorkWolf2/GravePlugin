@@ -53,7 +53,7 @@ public class GraveManager {
         ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         armorStand.setVisible(false);
         armorStand.setGravity(false);
-        armorStand.setCustomName(player.getName() + "'s Grave");
+        armorStand.setCustomName("Grave di " + player.getName());
         armorStand.setCustomNameVisible(true);
         armorStand.setInvulnerable(true);
         if (plugin.getConfigManager().isSmallArmorStand()) {
@@ -72,7 +72,11 @@ public class GraveManager {
         graves.put(graveId, grave);
 
         gravePersistenceManager.saveGraves();
-        player.sendMessage(plugin.getPluginPrefix() + ChatColor.DARK_PURPLE +  "A grave got successfully created at: " + ChatColor.LIGHT_PURPLE +  location.getX()  + " "+ ChatColor.RED + location.getY() + " " + ChatColor.LIGHT_PURPLE + location.getZ());
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.successfull-grave")
+                .replaceAll("%x%", String.valueOf(location.getX()))
+                .replaceAll("%y%", String.valueOf(location.getY()))
+                .replaceAll("%z%", String.valueOf(location.getZ()))
+                ));
         return graveId;
     }
 
@@ -84,7 +88,7 @@ public class GraveManager {
                     .findFirst()
                     .orElse(null);
             if (armorStand != null) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> armorStand.remove(), 1);
+                Bukkit.getScheduler().runTaskLater(plugin, armorStand::remove, 1);
                 armorStand.remove();
             }
 

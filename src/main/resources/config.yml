@@ -31,3 +31,8 @@ messages:
   no-permission: "&cNon hai il permesso di usare questo comando!"
   no-graves-near: "&cNon ci sono graves vicinoa te"
   click: "&aClicca il bottone per ricevere gli item"
+  successfull-grave: "è stata creata una grave con successo a: &5%x%, %y%, %z%"
+  restore: "Recupera oggetti"
+  drop: "Droppa oggetti"
+
+    # "A grave got successfully created at: " + ChatColor.LIGHT_PURPLE +  location.getX()  + " "+ ChatColor.RED + location.getY() + " " + ChatColor.LIGHT_PURPLE + location.getZ());

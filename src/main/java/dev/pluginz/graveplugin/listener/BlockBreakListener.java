@@ -54,7 +54,7 @@ public class BlockBreakListener implements Listener {
                     grave.getLocation().getBlockY() == blockLocation.getBlockY() &&
                     grave.getLocation().getBlockZ() == blockLocation.getBlockZ()) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(plugin.getPluginPrefix() +  "You cannot break a grave's player head.");
+                    event.getPlayer().sendMessage("Non puoi rompere una tomba.");
                     break;
                 }
             }

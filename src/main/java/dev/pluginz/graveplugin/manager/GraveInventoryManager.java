@@ -59,7 +59,7 @@ public class GraveInventoryManager {
         }
         int inventorySize = 54;
 
-        Inventory graveInventory = Bukkit.createInventory(null, inventorySize, "Grave of " + player.getName());
+        Inventory graveInventory = Bukkit.createInventory(null, inventorySize, "Tomba di " + player.getName());
 
         // Add Armor (First Row)
         int startIndex = 0;
@@ -90,14 +90,14 @@ public class GraveInventoryManager {
             }
         }
 
-        ItemStack greenPane = createGlassPane(Material.GREEN_STAINED_GLASS_PANE, "Restore Items");
-        ItemStack redPane = createGlassPane(Material.RED_STAINED_GLASS_PANE, "Drop Items");
+        ItemStack greenPane = createGlassPane(Material.GREEN_STAINED_GLASS_PANE, ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.restore")));
+        ItemStack redPane = createGlassPane(Material.RED_STAINED_GLASS_PANE, ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.drop")));
 
         int expLevels = grave.getLvl();
         ItemStack expBottles;
         expBottles = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
         ItemMeta meta = expBottles.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "Level: " + ChatColor.YELLOW + expLevels);
+        meta.setDisplayName(ChatColor.GREEN + "Livelli: " + ChatColor.YELLOW + expLevels);
         expBottles.setItemMeta(meta);
         graveInventory.setItem(49, expBottles);
 
@@ -270,7 +270,7 @@ public class GraveInventoryManager {
     }
 
     public boolean isGraveInventory(InventoryView inventoryView) {
-        return inventoryView.getTitle().startsWith("Grave of ");
+        return inventoryView.getTitle().startsWith("Tomba di ");
     }
 
     public UUID getGraveIdFromInventory(Inventory inventory) {

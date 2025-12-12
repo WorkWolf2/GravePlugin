@@ -59,10 +59,8 @@ public class GraveTimeoutManager {
             long elapsedTime = currentTime - lastUpdateTime;
             lastUpdateTime = currentTime;
             Map<UUID, Grave> graves = graveManager.getGraves();
-            Iterator<Grave> iterator = graves.values().iterator();
 
-            while (iterator.hasNext()) {
-                Grave grave = iterator.next();
+            for (Grave grave : graves.values()) {
                 grave.incrementActiveTime(elapsedTime);
 
                 if (grave.getMaxActiveTime() == -1) {
@@ -102,7 +100,7 @@ public class GraveTimeoutManager {
                 ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(graveManager.getArmorStandIdFromGraveId(graveId));
                 if (armorStand != null) {
                     String playerName = grave.getPlayerName();
-                    armorStand.setCustomName(playerName + "'s Grave - " + coloredTime);
+                    armorStand.setCustomName("Tomba di " + playerName + " " + coloredTime);
                 }
             }
         }
